@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * Created by yannick on 23/8/16.
  */
 @Configuration
-@EnableTransactionManagement
+@EnableTransactionManagement(proxyTargetClass = true)
 @Import({HibernateJPAJTAConfig.class, BitronixConfig.class, BitronixHibernateConfig.class, JMSQueueConfig.class, JMSTopicConfig.class, JMSDurableTopicConfig.class, JMSTopicTemplateConfig.class})
 public class StandaloneEEConfig {
 }
