@@ -50,9 +50,9 @@ public class StandaloneEEConfigTest {
 
     @Test
     public void testStandalone() {
+        System.out.println("Sending");
         for (int i = 0; i < 100; i++) {
             final int finalI = i;
-            System.out.println("Create " + i);
             tx.execute(transactionStatus -> {
                 entityManager.persist(new TestObj(finalI));
                 jms.send(QUEUE, session -> session.createTextMessage(Integer.toString(finalI)));
@@ -60,14 +60,17 @@ public class StandaloneEEConfigTest {
                 return null;
             });
         }
+        System.out.println("Checking database");
         List list = entityManager.createQuery("select t from TestObj t").getResultList();
         Assert.assertEquals(MAX_DB_TX, list.size());
+        System.out.println("Checking received queue");
         checkReceived(receivedQueue);
+        System.out.println("Checking received topic");
         checkReceived(receivedTopic);
     }
 
     private void checkReceived(HashSet<String> received) {
-        wait(5000, () -> {
+        wait(25000, () -> {
             Assert.assertEquals(100, received.size());
             for (int i = 0; i < 100; i++) {
                 Assert.assertTrue(received.contains(Integer.toString(i)));
@@ -86,6 +89,7 @@ public class StandaloneEEConfigTest {
     @JmsListener(destination = TOPIC, containerFactory = "durableTopicJmsListenerContainerFactory")
     public void receivedTopicMsg(String txt) {
         synchronized (receivedTopic) {
+            System.out.println("Received topic " + txt);
             receivedTopic.add(txt);
         }
     }
