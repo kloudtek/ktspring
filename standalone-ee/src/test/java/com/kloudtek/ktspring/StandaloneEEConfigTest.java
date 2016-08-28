@@ -82,6 +82,7 @@ public class StandaloneEEConfigTest {
     @JmsListener(destination = QUEUE)
     public void receivedQueueMsg(String txt) {
         synchronized (receivedQueue) {
+            System.out.println("Received queue " + txt);
             receivedQueue.add(txt);
         }
     }
