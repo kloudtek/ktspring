@@ -1,0 +1,28 @@
+<!--
+  ~ Copyright (c) 2016. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  -->
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns="urn:activemq"
+               xsi:schemaLocation="urn:activemq /schema/artemis-server.xsd">
+    <jms xmlns="urn:activemq:jms">
+    </jms>
+
+    <core xmlns="urn:activemq:core">
+        <persistence-enabled>false</persistence-enabled>
+        <security-enabled>false</security-enabled>
+        <!-- Connectors -->
+
+        <connectors>
+            <connector name="in-vm">vm://0</connector>
+        </connectors>
+
+        <acceptors>
+            <acceptor name="in-vm">vm://0</acceptor>
+        </acceptors>
+    </core>
+</configuration>
