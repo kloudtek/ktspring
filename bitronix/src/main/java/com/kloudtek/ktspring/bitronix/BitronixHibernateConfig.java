@@ -23,7 +23,7 @@ public class BitronixHibernateConfig {
     @Bean
     public JPAParams jpaParams() {
         Properties p = new Properties();
-        p.setProperty("hibernate.connection.handling_mode", "DELAYED_ACQUISITION_AND_RELEASE_AFTER_TRANSACTION");
+//        p.setProperty("hibernate.connection.handling_mode", "DELAYED_ACQUISITION_AND_RELEASE_AFTER_TRANSACTION");
         p.setProperty("hibernate.current_session_context_class", "jta");
         p.setProperty("hibernate.transaction.jta.platform", BitronixJtaPlatform.class.getName());
         return new JPAParams(p);

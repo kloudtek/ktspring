@@ -19,6 +19,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.jms.ConnectionFactory;
 
+import static org.springframework.jms.listener.DefaultMessageListenerContainer.CACHE_CONSUMER;
+
 /**
  * Created by yannick on 28/8/16.
  */
@@ -38,6 +40,7 @@ public class JMSTopicConfig {
         factory.setAutoStartup(true);
         factory.setPubSubDomain(true);
         factory.setSessionTransacted(true);
+        factory.setCacheLevel(CACHE_CONSUMER);
         return factory;
     }
 
@@ -46,6 +49,7 @@ public class JMSTopicConfig {
     public JmsTemplate jmsTopicTemplate() {
         JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
         jmsTemplate.setPubSubDomain(true);
+        jmsTemplate.setSessionTransacted(true);
         return jmsTemplate;
     }
 }

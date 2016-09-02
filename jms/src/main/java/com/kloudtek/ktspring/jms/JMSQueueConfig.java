@@ -19,6 +19,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.jms.ConnectionFactory;
 
+import static org.springframework.jms.listener.DefaultMessageListenerContainer.CACHE_CONSUMER;
+
 /**
  * Created by yannick on 28/8/16.
  */
@@ -37,12 +39,15 @@ public class JMSQueueConfig {
         factory.setConnectionFactory(connectionFactory);
         factory.setAutoStartup(true);
         factory.setSessionTransacted(true);
+        factory.setCacheLevel(CACHE_CONSUMER);
         return factory;
     }
 
     @Bean
     @Qualifier("queue")
     public JmsTemplate jmsTemplate() {
-        return new JmsTemplate(connectionFactory);
+        JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
+        jmsTemplate.setSessionTransacted(true);
+        return jmsTemplate;
     }
 }

@@ -10,6 +10,7 @@ package com.kloudtek.ktspring;
 
 import com.kloudtek.util.ThreadUtils;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +26,22 @@ import javax.persistence.PersistenceContext;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.logging.Logger;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by yannick on 23/8/16.
  */
+@SuppressWarnings("JpaQlInspection")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {Config.class})
 public class StandaloneEEConfigTest {
+    private static final Logger logger = Logger.getLogger(StandaloneEEConfigTest.class.getName());
     public static final int MAX_DB_TX = 100;
     public static final String QUEUE = "queue";
     public static final String TOPIC = "testtopic";
+    public static final String QUEUE2 = "testqueue2";
     @Autowired
     private TransactionTemplate tx;
     @Autowired
@@ -47,6 +54,18 @@ public class StandaloneEEConfigTest {
     private EntityManager entityManager;
     private final HashSet<String> receivedQueue = new HashSet<>();
     private final HashSet<String> receivedTopic = new HashSet<>();
+    private final HashSet<String> receivedQueue2 = new HashSet<>();
+
+    @Before()
+    public void init() {
+        receivedQueue.clear();
+        receivedTopic.clear();
+        receivedQueue2.clear();
+        tx.execute(status -> {
+            entityManager.createQuery("delete from TestObj").executeUpdate();
+            return null;
+        });
+    }
 
     @Test
     public void testStandalone() {
@@ -54,24 +73,64 @@ public class StandaloneEEConfigTest {
         for (int i = 0; i < 100; i++) {
             final int finalI = i;
             tx.execute(transactionStatus -> {
-                entityManager.persist(new TestObj(finalI));
-                jms.send(QUEUE, session -> session.createTextMessage(Integer.toString(finalI)));
+                tx.execute(status -> {
+                    entityManager.persist(new TestObj(finalI));
+                    jms.send(QUEUE, session -> session.createTextMessage(Integer.toString(finalI)));
+                    return null;
+                });
                 topicJms.send(TOPIC, session -> session.createTextMessage(Integer.toString(finalI)));
                 return null;
             });
         }
         System.out.println("Checking database");
         List list = entityManager.createQuery("select t from TestObj t").getResultList();
-        Assert.assertEquals(MAX_DB_TX, list.size());
+        assertEquals(MAX_DB_TX, list.size());
         System.out.println("Checking received queue");
         checkReceived(receivedQueue);
         System.out.println("Checking received topic");
         checkReceived(receivedTopic);
+        System.out.println("Checking received queue 2");
+        checkReceived(receivedQueue2);
+    }
+
+    @Test
+    public void testExplicitRollback() {
+        assertEquals(0, entityManager.createQuery("select t from TestObj t").getResultList().size());
+        try {
+            tx.execute(status -> {
+                entityManager.persist(new TestObj(0));
+                jms.send(QUEUE, session -> session.createTextMessage("test"));
+                status.setRollbackOnly();
+                return true;
+            });
+        } catch (Exception e) {
+            System.out.println();
+        }
+        ThreadUtils.sleep(1000);
+        assertEquals(0, entityManager.createQuery("select t from TestObj t").getResultList().size());
+        assertEquals(0, receivedQueue.size());
+    }
+
+    @Test
+    public void testExplicitRollbackByException() {
+        assertEquals(0, entityManager.createQuery("select t from TestObj t").getResultList().size());
+        try {
+            tx.execute(status -> {
+                entityManager.persist(new TestObj(0));
+                jms.send(QUEUE, session -> session.createTextMessage("test"));
+                throw new RuntimeException("fail");
+            });
+        } catch (RuntimeException e) {
+            assertEquals("fail", e.getMessage());
+        }
+        ThreadUtils.sleep(1000);
+        assertEquals(0, entityManager.createQuery("select t from TestObj t").getResultList().size());
+        assertEquals(0, receivedQueue.size());
     }
 
     private void checkReceived(HashSet<String> received) {
         wait(25000, () -> {
-            Assert.assertEquals(100, received.size());
+            assertEquals(100, received.size());
             for (int i = 0; i < 100; i++) {
                 Assert.assertTrue(received.contains(Integer.toString(i)));
             }
@@ -82,16 +141,25 @@ public class StandaloneEEConfigTest {
     @JmsListener(destination = QUEUE)
     public void receivedQueueMsg(String txt) {
         synchronized (receivedQueue) {
-            System.out.println("Received queue " + txt);
+            logger.info("Received queue : " + txt);
             receivedQueue.add(txt);
+        }
+    }
+
+    @JmsListener(destination = QUEUE2)
+    public void receivedQueue2Msg(String txt) {
+        synchronized (receivedQueue2) {
+            logger.info("Received queue2 : " + txt);
+            receivedQueue2.add(txt);
         }
     }
 
     @JmsListener(destination = TOPIC, containerFactory = "durableTopicJmsListenerContainerFactory")
     public void receivedTopicMsg(String txt) {
         synchronized (receivedTopic) {
-            System.out.println("Received topic " + txt);
+            logger.info("Received topic " + txt);
             receivedTopic.add(txt);
+            jms.send(QUEUE2, session -> session.createTextMessage(txt));
         }
     }
 

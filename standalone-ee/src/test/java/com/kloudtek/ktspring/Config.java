@@ -50,12 +50,13 @@ public class Config {
     public PoolingDataSource datasource() {
         PoolingDataSource dataSource = new PoolingDataSource();
         dataSource.setUniqueName("hsqldb");
-        dataSource.setMaxPoolSize(10);
+        dataSource.setMaxPoolSize(50);
         dataSource.setAllowLocalTransactions(true);
         dataSource.setClassName(LrcXADataSource.class.getName());
         Properties p = new Properties();
-        p.setProperty("url", "jdbc:hsqldb:mem:aname");
+        p.setProperty("url", "jdbc:hsqldb:mem:test");
         p.setProperty("user", "sa");
+        p.setProperty("password", "");
         p.setProperty("driverClassName", jdbcDriver.class.getName());
         dataSource.setDriverProperties(p);
         return dataSource;
