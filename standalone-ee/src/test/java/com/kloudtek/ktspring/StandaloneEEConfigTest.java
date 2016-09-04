@@ -33,8 +33,8 @@ import static org.junit.Assert.assertNotNull;
  */
 @SuppressWarnings("JpaQlInspection")
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = BitronixTestConfig.class)
-//@ContextConfiguration(classes = AtomikosTestConfig.class)
+//@ContextConfiguration(classes = BitronixTestConfig.class)
+@ContextConfiguration(classes = AtomikosTestConfig.class)
 //@ContextConfiguration(classes = JPATestConfig.class)
 public class StandaloneEEConfigTest {
     static {
@@ -115,7 +115,7 @@ public class StandaloneEEConfigTest {
         } catch (Exception e) {
             System.out.println();
         }
-        ThreadUtils.sleep(2000);
+        ThreadUtils.sleep(3000);
         assertEquals(0, entityManager.createQuery("select t from TestObj t").getResultList().size());
         assertEquals(0, receivedQueue.size());
     }
@@ -132,7 +132,7 @@ public class StandaloneEEConfigTest {
         } catch (RuntimeException e) {
             assertEquals("fail", e.getMessage());
         }
-        ThreadUtils.sleep(1000);
+        ThreadUtils.sleep(3000);
         assertEquals(0, entityManager.createQuery("select t from TestObj t").getResultList().size());
         assertEquals(0, receivedQueue.size());
     }
