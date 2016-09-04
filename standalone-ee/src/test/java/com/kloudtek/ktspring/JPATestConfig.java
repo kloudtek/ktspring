@@ -60,11 +60,11 @@ public class JPATestConfig {
 
     public DataSource datasource() throws Exception {
         EmbeddedDatabase embeddedDatabase = new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.HSQL).build();
-        try (Connection connection = embeddedDatabase.getConnection()) {
-            try (Statement st = connection.createStatement()) {
-                st.execute("SET DATABASE EVENT LOG SQL LEVEL 3");
-            }
-        }
+//        try (Connection connection = embeddedDatabase.getConnection()) {
+//            try (Statement st = connection.createStatement()) {
+//                st.execute("SET DATABASE EVENT LOG SQL LEVEL 3");
+//            }
+//        }
         return embeddedDatabase;
     }
 
@@ -80,8 +80,8 @@ public class JPATestConfig {
     public ConnectionFactory connectionFactory() {
         ActiveMQXAConnectionFactory connectionFactory = new ActiveMQXAConnectionFactory("vm://0");
         connectionFactory.setClientID(jmsClientId);
-        CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory(connectionFactory);
-        TransactionAwareConnectionFactoryProxy txConnectionFactory = new TransactionAwareConnectionFactoryProxy(cachingConnectionFactory);
+//        CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory(connectionFactory);
+        TransactionAwareConnectionFactoryProxy txConnectionFactory = new TransactionAwareConnectionFactoryProxy(connectionFactory);
         return txConnectionFactory;
     }
 }

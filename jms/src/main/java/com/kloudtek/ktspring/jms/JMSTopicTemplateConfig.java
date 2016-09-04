@@ -29,6 +29,7 @@ public class JMSTopicTemplateConfig {
     public JmsTemplate jmsTopicTemplate() {
         JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
         jmsTemplate.setPubSubDomain(true);
+        jmsTemplate.setSessionTransacted(true);
         return jmsTemplate;
     }
 }

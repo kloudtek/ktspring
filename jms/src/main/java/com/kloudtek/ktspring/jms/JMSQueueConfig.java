@@ -48,6 +48,7 @@ public class JMSQueueConfig {
     public JmsTemplate jmsTemplate() {
         JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
         jmsTemplate.setSessionTransacted(true);
+        jmsTemplate.setDeliveryPersistent(true);
         return jmsTemplate;
     }
 }
