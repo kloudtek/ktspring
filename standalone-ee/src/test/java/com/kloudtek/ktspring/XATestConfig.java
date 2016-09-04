@@ -5,6 +5,7 @@
 package com.kloudtek.ktspring;
 
 import com.kloudtek.ktspring.hibernatejpa.JPAConfig;
+import org.hibernate.dialect.DerbyTenSevenDialect;
 import org.hibernate.dialect.HSQLDialect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -34,7 +35,8 @@ public class XATestConfig {
     @Bean
     public JPAConfig jpaConfig(DataSource datasource) throws Exception {
         Properties p = new Properties();
-        p.setProperty("hibernate.dialect", HSQLDialect.class.getName());
+//        p.setProperty("hibernate.dialect", HSQLDialect.class.getName());
+        p.setProperty("hibernate.dialect", DerbyTenSevenDialect.class.getName());
         p.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         p.setProperty("hibernate.showsql", "true");
         return new JPAConfig(p, datasource, true, "com.kloudtek.ktspring");

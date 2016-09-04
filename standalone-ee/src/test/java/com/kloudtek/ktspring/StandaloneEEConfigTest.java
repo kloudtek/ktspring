@@ -33,8 +33,8 @@ import static org.junit.Assert.assertNotNull;
  */
 @SuppressWarnings("JpaQlInspection")
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = BitronixTestConfig.class)
-//@ContextConfiguration(classes = AtomikosTestConfig.class)
+//@ContextConfiguration(classes = BitronixTestConfig.class)
+@ContextConfiguration(classes = AtomikosTestConfig.class)
 //@ContextConfiguration(classes = JPATestConfig.class)
 public class StandaloneEEConfigTest {
     static {
@@ -82,6 +82,7 @@ public class StandaloneEEConfigTest {
                     entityManager.persist(o2);
                     entityManager.persist(new TestObj(finalI, o2));
                     jms.send(QUEUE, session -> session.createTextMessage(Integer.toString(finalI)));
+                    entityManager.flush();
                     return null;
                 });
                 topicJms.send(TOPIC, session -> session.createTextMessage(Integer.toString(finalI)));
