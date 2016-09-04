@@ -6,28 +6,20 @@ package com.kloudtek.ktspring;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 
 /**
  * Created by yannick on 25/8/16.
  */
 @Entity
-public class TestObj {
+public class TestObj2 {
     @Id
     private int id;
-    @OneToOne
-    private TestObj2 testObj2;
 
-    public TestObj() {
+    public TestObj2() {
     }
 
-    public TestObj(int id) {
+    public TestObj2(int id) {
         this.id = id;
-    }
-
-    public TestObj(int id, TestObj2 testObj2) {
-        this.id = id;
-        this.testObj2 = testObj2;
     }
 
     public int getId() {

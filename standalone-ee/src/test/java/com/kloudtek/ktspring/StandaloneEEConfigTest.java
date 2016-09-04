@@ -1,9 +1,5 @@
 /*
- * Copyright (c) 2016. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
+ * Copyright (c) 2016 Kloudtek Ltd
  */
 
 package com.kloudtek.ktspring;
@@ -37,6 +33,9 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {Config.class})
 public class StandaloneEEConfigTest {
+    static {
+        System.setProperty("hsqldb.reconfig_logging", "false");
+    }
     private static final Logger logger = Logger.getLogger(StandaloneEEConfigTest.class.getName());
     public static final int MAX_DB_TX = 100;
     public static final String QUEUE = "queue";
@@ -69,12 +68,14 @@ public class StandaloneEEConfigTest {
 
     @Test
     public void testStandalone() {
-        System.out.println("Sending");
+        System.out.println("start standalone test");
         for (int i = 0; i < 100; i++) {
             final int finalI = i;
             tx.execute(transactionStatus -> {
                 tx.execute(status -> {
-                    entityManager.persist(new TestObj(finalI));
+                    TestObj2 o2 = new TestObj2(finalI);
+                    entityManager.persist(o2);
+                    entityManager.persist(new TestObj(finalI, o2));
                     jms.send(QUEUE, session -> session.createTextMessage(Integer.toString(finalI)));
                     return null;
                 });
@@ -98,7 +99,9 @@ public class StandaloneEEConfigTest {
         assertEquals(0, entityManager.createQuery("select t from TestObj t").getResultList().size());
         try {
             tx.execute(status -> {
-                entityManager.persist(new TestObj(0));
+                TestObj2 o2 = new TestObj2();
+                entityManager.persist(o2);
+                entityManager.persist(new TestObj(0, o2));
                 jms.send(QUEUE, session -> session.createTextMessage("test"));
                 status.setRollbackOnly();
                 return true;

@@ -4,12 +4,12 @@
 
 package com.kloudtek.ktspring;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
-import bitronix.tm.resource.jdbc.lrc.LrcXADataSource;
 import com.kloudtek.ktspring.artemis.ArtemisXAEmbeddedServerConfig;
+import com.kloudtek.ktspring.bitronix.BitronixConfig;
+import com.kloudtek.ktspring.bitronix.BitronixHibernateConfig;
 import com.kloudtek.ktspring.hibernatejpa.JPAConfig;
 import org.hibernate.dialect.HSQLDialect;
-import org.hsqldb.jdbcDriver;
+import org.hsqldb.jdbc.JDBCDataSourceFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +17,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.Properties;
 
 /**
@@ -24,7 +27,8 @@ import java.util.Properties;
  */
 @SuppressWarnings("Duplicates")
 @Configuration
-@Import({StandaloneEEConfig.class, ArtemisXAEmbeddedServerConfig.class})
+//@Import({StandaloneEEConfig.class, AtomikosConfig.class, AtomikosHibernateConfig.class, ArtemisXAEmbeddedServerConfig.class})
+@Import({StandaloneEEConfig.class, BitronixConfig.class, BitronixHibernateConfig.class, ArtemisXAEmbeddedServerConfig.class})
 public class Config {
     @Autowired
     private PlatformTransactionManager transactionManager;
@@ -35,7 +39,7 @@ public class Config {
     }
 
     @Bean
-    public JPAConfig jpaConfig() {
+    public JPAConfig jpaConfig() throws Exception {
         Properties p = new Properties();
         p.setProperty("hibernate.dialect", HSQLDialect.class.getName());
         p.setProperty("hibernate.hbm2ddl.auto", "create-drop");
@@ -43,19 +47,17 @@ public class Config {
         return new JPAConfig(p, datasource(), true, "com.kloudtek.ktspring");
     }
 
-    @Bean(initMethod = "init", destroyMethod = "close")
-    public PoolingDataSource datasource() {
-        PoolingDataSource dataSource = new PoolingDataSource();
-        dataSource.setUniqueName("hsqldb");
-        dataSource.setMaxPoolSize(50);
-        dataSource.setAllowLocalTransactions(true);
-        dataSource.setClassName(LrcXADataSource.class.getName());
+    public DataSource datasource() throws Exception {
         Properties p = new Properties();
-        p.setProperty("url", "jdbc:hsqldb:mem:test");
-        p.setProperty("user", "sa");
+        p.setProperty("url", "jdbc:hsqldb:mem:test?hsqldb.applog=3");
+        p.setProperty("username", "sa");
         p.setProperty("password", "");
-        p.setProperty("driverClassName", jdbcDriver.class.getName());
-        dataSource.setDriverProperties(p);
+        DataSource dataSource = JDBCDataSourceFactory.createDataSource(p);
+        try (Connection connection = dataSource.getConnection()) {
+            try (Statement st = connection.createStatement()) {
+                st.execute("SET DATABASE EVENT LOG SQL LEVEL 3");
+            }
+        }
         return dataSource;
     }
 }

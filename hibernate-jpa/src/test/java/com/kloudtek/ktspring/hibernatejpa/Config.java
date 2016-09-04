@@ -4,7 +4,7 @@
 
 package com.kloudtek.ktspring.hibernatejpa;
 
-import org.hibernate.dialect.HSQLDialect;
+import org.hibernate.dialect.DerbyTenSevenDialect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -25,7 +25,7 @@ public class Config {
     @Bean
     public JPAConfig jpaConfig() {
         Properties p = new Properties();
-        p.setProperty("hibernate.dialect", HSQLDialect.class.getName());
+        p.setProperty("hibernate.dialect", DerbyTenSevenDialect.class.getName());
         p.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         p.setProperty("hibernate.showsql", "true");
         return new JPAConfig(p, datasource(), false, "com.kloudtek.ktspring");

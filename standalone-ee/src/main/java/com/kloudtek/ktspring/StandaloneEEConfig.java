@@ -4,8 +4,7 @@
 
 package com.kloudtek.ktspring;
 
-import com.kloudtek.ktspring.bitronix.BitronixConfig;
-import com.kloudtek.ktspring.bitronix.BitronixHibernateConfig;
+import com.kloudtek.ktspring.atomikos.AtomikosConfig;
 import com.kloudtek.ktspring.hibernatejpa.HibernateJPAConfig;
 import com.kloudtek.ktspring.jms.JMSDurableTopicConfig;
 import com.kloudtek.ktspring.jms.JMSQueueConfig;
@@ -20,6 +19,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @Configuration
 @EnableTransactionManagement(proxyTargetClass = true)
-@Import({HibernateJPAConfig.class, BitronixConfig.class, BitronixHibernateConfig.class, JMSQueueConfig.class, JMSTopicConfig.class, JMSDurableTopicConfig.class, JMSTopicTemplateConfig.class})
+@Import({HibernateJPAConfig.class, AtomikosConfig.class, JMSQueueConfig.class, JMSTopicConfig.class, JMSDurableTopicConfig.class, JMSTopicTemplateConfig.class})
 public class StandaloneEEConfig {
 }
