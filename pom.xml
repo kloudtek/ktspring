@@ -15,11 +15,13 @@
     <modules>
         <module>bitronix</module>
         <module>hibernate-jpa</module>
-        <module>activemq-artemis</module>
-        <module>standalone-ee</module>
+        <module>artemis</module>
+        <module>testhelper</module>
         <module>jms</module>
         <module>core</module>
         <module>atomikos</module>
+        <module>atomikos-artemis-hibernate</module>
+        <module>bitronix-artemis-hibernate</module>
     </modules>
     <name>KTSpring</name>
     <url>https://github.com/Kloudtek/ktspring</url>

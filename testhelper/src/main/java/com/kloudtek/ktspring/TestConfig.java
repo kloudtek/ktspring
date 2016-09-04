@@ -22,7 +22,7 @@ import java.util.Properties;
 @SuppressWarnings("Duplicates")
 @Configuration
 @EnableTransactionManagement(proxyTargetClass = true)
-public class XATestConfig {
+public class TestConfig {
     @Autowired
     private PlatformTransactionManager transactionManager;
 
@@ -34,7 +34,6 @@ public class XATestConfig {
     @Bean
     public JPAConfig jpaConfig(DataSource datasource) throws Exception {
         Properties p = new Properties();
-        p.setProperty("hibernate.dialect", HSQLDialect.class.getName());
         p.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         p.setProperty("hibernate.showsql", "true");
         return new JPAConfig(p, datasource, true, "com.kloudtek.ktspring");

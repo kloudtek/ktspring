@@ -19,6 +19,11 @@ public class JPAParams {
     public JPAParams() {
     }
 
+    public JPAParams(String key, String value) {
+        properties = new Properties();
+        properties.setProperty(key,value);
+    }
+
     public JPAParams(Properties properties) {
         this.properties = properties;
     }

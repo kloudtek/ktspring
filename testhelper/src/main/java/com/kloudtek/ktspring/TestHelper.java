@@ -1,21 +1,13 @@
-/*
- * Copyright (c) 2016 Kloudtek Ltd
- */
-
 package com.kloudtek.ktspring;
 
-import com.kloudtek.ktspring.bitronix.BitronixConfig;
 import com.kloudtek.util.ThreadUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.persistence.EntityManager;
@@ -29,18 +21,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * Created by yannick on 23/8/16.
+ * Created by yannick on 4/9/16.
  */
-@SuppressWarnings("JpaQlInspection")
-@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = BitronixTestConfig.class)
-@ContextConfiguration(classes = AtomikosTestConfig.class)
-//@ContextConfiguration(classes = JPATestConfig.class)
-public class StandaloneEEConfigTest {
+public class TestHelper {
     static {
         System.setProperty("hsqldb.reconfig_logging", "false");
     }
-    private static final Logger logger = Logger.getLogger(StandaloneEEConfigTest.class.getName());
+    private static final Logger logger = Logger.getLogger(TestHelper.class.getName());
     public static final int MAX_DB_TX = 100;
     public static final String QUEUE = "queue";
     public static final String TOPIC = "testtopic";
@@ -59,8 +46,7 @@ public class StandaloneEEConfigTest {
     private final HashSet<String> receivedTopic = new HashSet<>();
     private final HashSet<String> receivedQueue2 = new HashSet<>();
 
-    @Before()
-    public void init() {
+    public void reset() {
         receivedQueue.clear();
         receivedTopic.clear();
         receivedQueue2.clear();
@@ -70,7 +56,6 @@ public class StandaloneEEConfigTest {
         });
     }
 
-    @Test
     public void testStandalone() {
         System.out.println("start standalone test");
         for (int i = 0; i < 100; i++) {
@@ -100,7 +85,6 @@ public class StandaloneEEConfigTest {
         checkReceived(receivedQueue2);
     }
 
-    @Test
     public void testExplicitRollback() {
         assertEquals(0, entityManager.createQuery("select t from TestObj t").getResultList().size());
         try {
@@ -120,7 +104,6 @@ public class StandaloneEEConfigTest {
         assertEquals(0, receivedQueue.size());
     }
 
-    @Test
     public void testExplicitRollbackByException() {
         assertEquals(0, entityManager.createQuery("select t from TestObj t").getResultList().size());
         try {

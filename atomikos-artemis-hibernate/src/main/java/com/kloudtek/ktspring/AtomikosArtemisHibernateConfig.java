@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * Created by yannick on 23/8/16.
  */
 @Configuration
-@EnableTransactionManagement(proxyTargetClass = true)
 @Import({HibernateJPAConfig.class, AtomikosConfig.class, JMSQueueConfig.class, JMSTopicConfig.class, JMSDurableTopicConfig.class, JMSTopicTemplateConfig.class})
-public class StandaloneEEConfig {
+public class AtomikosArtemisHibernateConfig {
 }

@@ -13,24 +13,29 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>ktspring-atomikos</artifactId>
+    <artifactId>ktspring-testhelper</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>com.atomikos</groupId>
-            <artifactId>transactions</artifactId>
-            <version>4.0.4</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
         </dependency>
         <dependency>
-            <groupId>com.atomikos</groupId>
-            <artifactId>transactions-jta</artifactId>
-            <version>4.0.4</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jcl</artifactId>
+            <version>1.7.21</version>
         </dependency>
-<!--        <dependency>
-            <groupId>javax.transaction</groupId>
-            <artifactId>jta</artifactId>
-            <version>1.1</version>
-        </dependency>-->
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.3.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.kloudtek.ktutils</groupId>
+            <artifactId>ktutils-core</artifactId>
+            <version>1.2.15</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
@@ -38,9 +43,8 @@
         </dependency>
         <dependency>
             <groupId>com.kloudtek.ktspring</groupId>
-            <artifactId>ktspring-hibernate-jpa</artifactId>
+            <artifactId>ktspring-artemis</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.kloudtek.ktspring</groupId>
@@ -53,9 +57,10 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.kloudtek.ktspring</groupId>
-            <artifactId>ktspring-artemis</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

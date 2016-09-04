@@ -40,7 +40,6 @@ public class AtomikosConfig {
     @DependsOn("userTransactionService")
     public UserTransactionImp userTransactionImp() throws SystemException {
         UserTransactionImp userTransactionImp = new UserTransactionImp();
-        userTransactionImp.setTransactionTimeout(3000);
         return userTransactionImp;
     }
 
