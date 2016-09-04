@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>ktspring-atomikos-artemis-hibernate</artifactId>
+    <artifactId>ktspring-standalone-atomikos-artemis-hibernate</artifactId>
 
     <dependencies>
         <dependency>

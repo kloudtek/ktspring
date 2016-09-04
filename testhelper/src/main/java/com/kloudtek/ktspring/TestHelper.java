@@ -99,8 +99,8 @@ public class TestHelper {
         } catch (Exception e) {
             System.out.println();
         }
-        ThreadUtils.sleep(3000);
         assertEquals(0, entityManager.createQuery("select t from TestObj t").getResultList().size());
+        ThreadUtils.sleep(3000);
         assertEquals(0, receivedQueue.size());
     }
 
@@ -115,8 +115,8 @@ public class TestHelper {
         } catch (RuntimeException e) {
             assertEquals("fail", e.getMessage());
         }
-        ThreadUtils.sleep(3000);
         assertEquals(0, entityManager.createQuery("select t from TestObj t").getResultList().size());
+        ThreadUtils.sleep(3000);
         assertEquals(0, receivedQueue.size());
     }
 
