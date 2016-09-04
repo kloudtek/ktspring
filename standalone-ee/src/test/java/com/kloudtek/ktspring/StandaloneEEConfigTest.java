@@ -4,6 +4,7 @@
 
 package com.kloudtek.ktspring;
 
+import com.kloudtek.ktspring.bitronix.BitronixConfig;
 import com.kloudtek.util.ThreadUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -25,13 +26,16 @@ import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by yannick on 23/8/16.
  */
 @SuppressWarnings("JpaQlInspection")
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {Config.class})
+@ContextConfiguration(classes = BitronixTestConfig.class)
+//@ContextConfiguration(classes = AtomikosTestConfig.class)
+//@ContextConfiguration(classes = JPATestConfig.class)
 public class StandaloneEEConfigTest {
     static {
         System.setProperty("hsqldb.reconfig_logging", "false");
@@ -73,6 +77,7 @@ public class StandaloneEEConfigTest {
             final int finalI = i;
             tx.execute(transactionStatus -> {
                 tx.execute(status -> {
+                    entityManager.persist(new TestObj3(finalI));
                     TestObj2 o2 = new TestObj2(finalI);
                     entityManager.persist(o2);
                     entityManager.persist(new TestObj(finalI, o2));
@@ -154,6 +159,8 @@ public class StandaloneEEConfigTest {
         synchronized (receivedQueue2) {
             logger.info("Received queue2 : " + txt);
             receivedQueue2.add(txt);
+            TestObj testObj = entityManager.find(TestObj.class, Integer.parseInt(txt));
+            assertNotNull(testObj);
         }
     }
 

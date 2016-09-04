@@ -26,6 +26,7 @@ public class BitronixHibernateConfig {
 //        p.setProperty("hibernate.connection.handling_mode", "DELAYED_ACQUISITION_AND_RELEASE_AFTER_TRANSACTION");
         p.setProperty("hibernate.current_session_context_class", "jta");
         p.setProperty("hibernate.transaction.jta.platform", BitronixJtaPlatform.class.getName());
+        p.setProperty("hibernate.connection.autocommit", "false");
         return new JPAParams(p);
     }
 }
