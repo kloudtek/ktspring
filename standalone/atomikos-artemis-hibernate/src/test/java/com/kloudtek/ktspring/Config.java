@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Import;
  * Created by yannick on 23/8/16.
  */
 @Configuration
-@Import({TestConfig.class, AtomikosConfig.class, AtomikosHibernateConfig.class, AtomikosHsqlMemDbDatasourceConfig.class,ArtemisXAEmbeddedServerConfig.class, HibernateJPAConfig.class, ArtemisXAEmbeddedServerConfig.class, JMSQueueConfig.class, JMSTopicConfig.class, JMSDurableTopicConfig.class, JMSTopicTemplateConfig.class})
+@Import({AtomikosConfig.class, AtomikosHibernateConfig.class, AtomikosHsqlMemDbDatasourceConfig.class, TestConfig.class, ArtemisXAEmbeddedServerConfig.class, HibernateJPAConfig.class, ArtemisXAEmbeddedServerConfig.class, JMSQueueConfig.class, JMSTopicConfig.class, JMSDurableTopicConfig.class, JMSTopicTemplateConfig.class})
 public class Config {
     @Bean
     public TestHelper testHelper() {

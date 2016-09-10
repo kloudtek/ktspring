@@ -23,11 +23,8 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement(proxyTargetClass = true)
 public class TestConfig {
-    @Autowired
-    private PlatformTransactionManager transactionManager;
-
     @Bean
-    public TransactionTemplate txTemplate() {
+    public TransactionTemplate txTemplate(PlatformTransactionManager transactionManager) {
         return new TransactionTemplate(transactionManager);
     }
 

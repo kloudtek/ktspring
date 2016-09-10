@@ -22,6 +22,7 @@
         <module>atomikos</module>
         <module>standalone/atomikos-artemis-hibernate</module>
         <module>bitronix-artemis-hibernate</module>
+        <module>standalone/artemis-hibernate</module>
     </modules>
     <name>KTSpring</name>
     <url>https://github.com/Kloudtek/ktspring</url>

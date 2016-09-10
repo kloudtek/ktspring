@@ -8,6 +8,7 @@ import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 import java.util.List;
@@ -18,14 +19,13 @@ import java.util.Properties;
  */
 @Configuration
 public class HibernateJPAConfig {
-    @Autowired
-    private JPAConfig config;
     @Autowired(required = false)
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private List<JPAParams> jpaParamsList;
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManager() {
+    @DependsOn("transactionManager")
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(JPAConfig config) {
         LocalContainerEntityManagerFactoryBean entityManager = new LocalContainerEntityManagerFactoryBean();
         if (config.isJtaDatasource()) {
             entityManager.setJtaDataSource(config.getDataSource());

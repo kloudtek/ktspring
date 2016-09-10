@@ -24,6 +24,7 @@ public class AtomikosConfig {
     public UserTransactionServiceImp userTransactionService() {
         Properties p = new Properties();
         p.setProperty("com.atomikos.icatch.service", "com.atomikos.icatch.standalone.UserTransactionServiceFactory");
+        p.setProperty("com.atomikos.icatch.default_jta_timeout","30000");
         return new UserTransactionServiceImp(p);
     }
 
@@ -45,7 +46,7 @@ public class AtomikosConfig {
 
     @Bean
     @DependsOn("userTransactionService")
-    public JtaTransactionManager jtaTransactionManager() {
+    public JtaTransactionManager transactionManager() {
         return new JtaTransactionManager(UserTransactionManager(), UserTransactionManager());
     }
 }

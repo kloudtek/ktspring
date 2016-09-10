@@ -4,10 +4,7 @@
 
 package com.kloudtek.ktspring;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 /**
  * Created by yannick on 25/8/16.
@@ -17,7 +14,6 @@ public class TestObj {
     @Id
     private int id;
     @OneToOne
-//    @Transient
     private TestObj2 testObj2;
 
     public TestObj() {

@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @RunWith(SpringJUnit4ClassRunner.class)
 @EnableTransactionManagement(proxyTargetClass = true)
 @ContextConfiguration(classes = Config.class)
-public class AtomikosArtemisHibernateConfigTest {
+public class ArtemisHibernateConfigTest {
     @Autowired
     private TestHelper testHelper;
 

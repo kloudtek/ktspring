@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.persistence.EntityManager;
@@ -52,17 +55,43 @@ public class TestHelper {
         receivedQueue2.clear();
         tx.execute(status -> {
             entityManager.createQuery("delete from TestObj").executeUpdate();
+            entityManager.createQuery("delete from TestObj2").executeUpdate();
             return null;
         });
     }
 
-    public void testStandalone() {
+    public void testDb() {
+        System.out.println("START DB TEST");
+        tx.execute(status -> {
+            TestObj2 o2 = new TestObj2(0);
+            entityManager.persist(o2);
+            TestObj o1 = new TestObj(0, o2);
+            entityManager.persist(o1);
+            TestObj2 ro2x = entityManager.find(TestObj2.class, 1);
+            TestObj o1x = new TestObj(1, ro2x);
+            entityManager.persist(o1x);
+            // flush required with relationship..... no freaking idea why ?!?!
+            entityManager.flush();
+            return null;
+        });
+        tx.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                TestObj2 ro2x = entityManager.find(TestObj2.class, 2);
+                entityManager.persist(ro2x);
+                TestObj o1x = new TestObj(2, ro2x);
+                entityManager.persist(o1x);
+                entityManager.flush();
+            }
+        });
+    }
+
+    public void testCombined() {
         System.out.println("start standalone test");
         for (int i = 0; i < 100; i++) {
             final int finalI = i;
             tx.execute(transactionStatus -> {
                 tx.execute(status -> {
-                    entityManager.persist(new TestObj3(finalI));
                     TestObj2 o2 = new TestObj2(finalI);
                     entityManager.persist(o2);
                     entityManager.persist(new TestObj(finalI, o2));
