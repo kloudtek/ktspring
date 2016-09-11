@@ -67,7 +67,8 @@ public class TestHelper {
             entityManager.persist(o2);
             TestObj o1 = new TestObj(0, o2);
             entityManager.persist(o1);
-            TestObj2 ro2x = entityManager.find(TestObj2.class, 1);
+            TestObj2 ro2x = entityManager.find(TestObj2.class, 0);
+            entityManager.persist(ro2x);
             TestObj o1x = new TestObj(1, ro2x);
             entityManager.persist(o1x);
             // flush required with relationship..... no freaking idea why ?!?!
@@ -77,7 +78,8 @@ public class TestHelper {
         tx.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
-                TestObj2 ro2x = entityManager.find(TestObj2.class, 2);
+                TestObj2 ro2x = entityManager.find(TestObj2.class, 0);
+                Assert.assertNotNull(ro2x);
                 entityManager.persist(ro2x);
                 TestObj o1x = new TestObj(2, ro2x);
                 entityManager.persist(o1x);

@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -42,11 +43,8 @@ import java.util.Properties;
  */
 @SuppressWarnings("Duplicates")
 @Configuration
-@Import({HibernateJPAConfig.class, HibernateJPATransactionConfig.class, ArtemisXAEmbeddedServerConfig.class, JMSQueueConfig.class, JMSTopicConfig.class, JMSDurableTopicConfig.class, JMSTopicTemplateConfig.class})
+@Import({StandaloneArtemisHibernateConfig.class,JMSQueueConfig.class, JMSTopicConfig.class, JMSDurableTopicConfig.class, JMSTopicTemplateConfig.class})
 public class Config {
-    @Value("${jms.clientid?:test}")
-    private String jmsClientId;
-
     @Bean
     public TestHelper testHelper() {
         return new TestHelper();
@@ -68,19 +66,5 @@ public class Config {
         p.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         p.setProperty("hibernate.showsql", "true");
         return new JPAConfig(p, datasource, false, "com.kloudtek.ktspring");
-    }
-
-    @Bean(initMethod = "start", destroyMethod = "stop")
-    public SpringJmsBootstrap artemisServer() {
-        return new SpringJmsBootstrap();
-    }
-
-    @Bean
-    public ConnectionFactory connectionFactory() {
-        ActiveMQXAConnectionFactory connectionFactory = new ActiveMQXAConnectionFactory("vm://0");
-        connectionFactory.setClientID(jmsClientId);
-        TransactionAwareConnectionFactoryProxy transactionAwareConnectionFactoryProxy = new TransactionAwareConnectionFactoryProxy(connectionFactory);
-        transactionAwareConnectionFactoryProxy.setSynchedLocalTransactionAllowed(true);
-        return transactionAwareConnectionFactoryProxy;
     }
 }

@@ -26,6 +26,10 @@ public class HibernateJPAConfig {
     @Bean
     @DependsOn("transactionManager")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(JPAConfig config) {
+        return createEntityManagerFactory(config, jpaParamsList);
+    }
+
+    public static LocalContainerEntityManagerFactoryBean createEntityManagerFactory(JPAConfig config, List<JPAParams> jpaParamsList) {
         LocalContainerEntityManagerFactoryBean entityManager = new LocalContainerEntityManagerFactoryBean();
         if (config.isJtaDatasource()) {
             entityManager.setJtaDataSource(config.getDataSource());
