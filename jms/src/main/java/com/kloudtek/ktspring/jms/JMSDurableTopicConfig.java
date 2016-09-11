@@ -25,13 +25,8 @@ import javax.jms.ConnectionFactory;
 @Configuration
 @EnableJms
 public class JMSDurableTopicConfig {
-    @Autowired
-    private PlatformTransactionManager transactionManager;
-    @Autowired
-    private ConnectionFactory connectionFactory;
-
     @Bean
-    public DefaultJmsListenerContainerFactory durableTopicJmsListenerContainerFactory() {
+    public DefaultJmsListenerContainerFactory durableTopicJmsListenerContainerFactory(ConnectionFactory connectionFactory, PlatformTransactionManager transactionManager) {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
         factory.setTransactionManager(transactionManager);
         factory.setConnectionFactory(connectionFactory);
@@ -44,7 +39,7 @@ public class JMSDurableTopicConfig {
 
     @Bean
     @Qualifier("topic")
-    public JmsTemplate jmsTopicTemplate() {
+    public JmsTemplate jmsTopicTemplate(ConnectionFactory connectionFactory) {
         JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
         jmsTemplate.setPubSubDomain(true);
         return jmsTemplate;

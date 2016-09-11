@@ -8,7 +8,6 @@
 
 package com.kloudtek.ktspring.jms;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,13 +26,8 @@ import static org.springframework.jms.listener.DefaultMessageListenerContainer.C
 @Configuration
 @EnableJms
 public class JMSQueueConfig {
-    @Autowired
-    private PlatformTransactionManager transactionManager;
-    @Autowired
-    private ConnectionFactory connectionFactory;
-
     @Bean
-    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory() {
+    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory(ConnectionFactory connectionFactory, PlatformTransactionManager transactionManager) {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
         factory.setTransactionManager(transactionManager);
         factory.setConnectionFactory(connectionFactory);
@@ -45,7 +39,7 @@ public class JMSQueueConfig {
 
     @Bean
     @Qualifier("queue")
-    public JmsTemplate jmsTemplate() {
+    public JmsTemplate jmsTemplate(ConnectionFactory connectionFactory) {
         JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
         jmsTemplate.setSessionTransacted(true);
         jmsTemplate.setDeliveryPersistent(true);

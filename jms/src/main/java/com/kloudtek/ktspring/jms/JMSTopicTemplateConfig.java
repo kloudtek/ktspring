@@ -21,12 +21,9 @@ import javax.jms.ConnectionFactory;
  */
 @Configuration
 public class JMSTopicTemplateConfig {
-    @Autowired
-    private ConnectionFactory connectionFactory;
-
     @Bean
     @Qualifier("topic")
-    public JmsTemplate jmsTopicTemplate() {
+    public JmsTemplate jmsTopicTemplate(ConnectionFactory connectionFactory) {
         JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
         jmsTemplate.setPubSubDomain(true);
         jmsTemplate.setSessionTransacted(true);

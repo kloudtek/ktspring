@@ -43,7 +43,7 @@ import java.util.Properties;
  */
 @SuppressWarnings("Duplicates")
 @Configuration
-@Import({StandaloneArtemisHibernateConfig.class,JMSQueueConfig.class, JMSTopicConfig.class, JMSDurableTopicConfig.class, JMSTopicTemplateConfig.class})
+@Import({StandaloneArtemisHibernateConfig.class})
 public class Config {
     @Bean
     public TestHelper testHelper() {
