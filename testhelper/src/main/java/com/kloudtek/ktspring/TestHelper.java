@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.jms.TextMessage;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.HashSet;
@@ -27,6 +29,9 @@ import static org.junit.Assert.assertNotNull;
  * Created by yannick on 4/9/16.
  */
 public class TestHelper {
+
+    public static final String DBCHECK = "dbcheck";
+
     static {
         System.setProperty("hsqldb.reconfig_logging", "false");
     }
@@ -97,7 +102,11 @@ public class TestHelper {
                     TestObj2 o2 = new TestObj2(finalI);
                     entityManager.persist(o2);
                     entityManager.persist(new TestObj(finalI, o2));
-                    jms.send(QUEUE, session -> session.createTextMessage(Integer.toString(finalI)));
+                    jms.send(QUEUE, session -> {
+                        TextMessage textMessage = session.createTextMessage(Integer.toString(finalI));
+                        textMessage.setBooleanProperty(DBCHECK,true);
+                        return textMessage;
+                    });
                     entityManager.flush();
                     return null;
                 });
@@ -151,6 +160,21 @@ public class TestHelper {
         assertEquals(0, receivedQueue.size());
     }
 
+    public void testOnlySentAfterCommit() {
+        tx.execute(status -> {
+            Assert.assertEquals(0,receivedQueue.size());
+            jms.send(QUEUE, session -> session.createTextMessage("testOnlySentAfterCommit"));
+            ThreadUtils.sleep(1000);
+            Assert.assertEquals(0,receivedQueue.size());
+            return null;
+        });
+        wait(2000, () -> {
+            Assert.assertEquals(1,receivedQueue.size());
+            Assert.assertEquals("testOnlySentAfterCommit",receivedQueue.iterator().next());
+            return true;
+        });
+    }
+
     private void checkReceived(HashSet<String> received) {
         wait(25000, () -> {
             assertEquals(100, received.size());
@@ -162,8 +186,15 @@ public class TestHelper {
     }
 
     @JmsListener(destination = QUEUE)
-    public void receivedQueueMsg(String txt) {
+    public void receivedQueueMsg(String txt, @Header(value = DBCHECK,required = false, defaultValue = "false") boolean dbCheck ) {
         synchronized (receivedQueue) {
+            if( dbCheck ) {
+                tx.execute(status -> {
+                    TestObj testObj = entityManager.find(TestObj.class, Integer.parseInt(txt));
+                    assertNotNull(testObj);
+                    return null;
+                });
+            }
             logger.info("Received queue : " + txt);
             receivedQueue.add(txt);
         }

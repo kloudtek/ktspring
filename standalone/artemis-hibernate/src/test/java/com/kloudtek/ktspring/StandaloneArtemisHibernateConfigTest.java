@@ -40,6 +40,11 @@ public class StandaloneArtemisHibernateConfigTest {
     }
 
     @Test
+    public void testOnlySentAfterCommit() {
+        testHelper.testOnlySentAfterCommit();
+    }
+
+    @Test
     public void testExplicitRollbackByException() {
         testHelper.testExplicitRollbackByException();
     }
