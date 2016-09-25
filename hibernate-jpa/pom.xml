@@ -24,7 +24,8 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>5.2.2.Final</version>
+            <!-- DO NOT USE 5.2.2 there are compatibility issues. see http://stackoverflow.com/questions/39396876/spring-transaction-synchronizer-closing-jpa-entity-manager-before-end-of-transac -->
+            <version>5.1.1.Final</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
