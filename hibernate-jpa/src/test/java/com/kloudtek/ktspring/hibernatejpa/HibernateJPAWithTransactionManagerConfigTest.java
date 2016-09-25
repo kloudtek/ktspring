@@ -21,7 +21,7 @@ import javax.persistence.PersistenceContext;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {Config.class})
-public class HibernateJPATransactionConfigTest {
+public class HibernateJPAWithTransactionManagerConfigTest {
     @PersistenceContext
     private EntityManager entityManager;
     @Autowired

@@ -20,7 +20,7 @@ import java.util.Properties;
  * Created by yannick on 3/9/16.
  */
 @Configuration
-@Import({HibernateJPATransactionConfig.class, HibernateJPAConfig.class})
+@Import({HibernateJPAWithTransactionManagerConfig.class, HibernateJPAConfig.class})
 public class Config {
     @Bean
     public JPAConfig jpaConfig() {

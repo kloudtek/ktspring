@@ -24,6 +24,7 @@ public class HibernateJPAConfig {
     private List<JPAParams> jpaParamsList;
 
     @Bean
+    // Needed because bitronix (or was atomikos? can't remember) needed to initialize before the entity manager
     @DependsOn("transactionManager")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(JPAConfig config) {
         return createEntityManagerFactory(config, jpaParamsList);
