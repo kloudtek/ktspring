@@ -15,7 +15,7 @@
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>artemis-spring-integration</artifactId>
-            <version>1.3.0</version>
+            <version>1.5.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework</groupId>
