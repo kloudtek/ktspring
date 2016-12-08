@@ -40,6 +40,7 @@
             <groupId>com.kloudtek.ktspring</groupId>
             <artifactId>ktspring-hibernate-jpa</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.kloudtek.ktspring</groupId>
