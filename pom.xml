@@ -7,11 +7,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>com.kloudtek</groupId>
-        <artifactId>kloudtek-parent-oss</artifactId>
-        <version>0.9</version>
-    </parent>
+
     <groupId>com.kloudtek.ktspring</groupId>
     <artifactId>ktspring</artifactId>
     <packaging>pom</packaging>
@@ -33,6 +29,16 @@
     </modules>
     <name>KTSpring</name>
     <url>https://github.com/Kloudtek/ktspring</url>
+    <organization>
+        <name>Kloudtek</name>
+        <url>http://www.kloudtek.com</url>
+    </organization>
+    <developers>
+        <developer>
+            <name>Dev Team</name>
+            <organization>Kloudtek</organization>
+        </developer>
+    </developers>
     <issueManagement>
         <system>Github</system>
         <url>https://github.com/Kloudtek/ktspring/issues</url>
@@ -49,6 +55,8 @@
         </license>
     </licenses>
     <properties>
+        <repo.oss.snapshot.url/>
+        <repo.oss.release.url/>
         <spring.version>4.3.4.RELEASE</spring.version>
     </properties>
     <dependencies>
@@ -70,9 +78,69 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.4</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <distributionManagement>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
     <profiles>
         <profile>
-            <id>sign</id>
+            <id>release</id>
             <build>
                 <plugins>
                     <plugin>
